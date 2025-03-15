@@ -1,0 +1,1 @@
+create table Venue( venue_id int primary key, venue_name varchar(50), adress varchar(50))

@@ -1,0 +1,2 @@
+create table Booking(booking_id int primary key, customer_id int, foreign key(customer_id) references Customer(customer_id), event_id int, foreign key(event_id) references EventTable(event_id), 
+num_tickets int, total_cost decimal, booking_date date)
