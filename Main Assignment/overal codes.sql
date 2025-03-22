@@ -246,3 +246,97 @@ from Booking b
 join Customer c on b.customer_id = c.customer_id
 where b.booking_date >= dateadd(day, -30, getdate()) 
 group by c.customer_id, c.customer_name;
+
+--task 4
+
+--question 1
+
+select v.venue_id, v.venue_name, 
+       (select avg(e.ticket_price) 
+        from Event_det e 
+        where e.venue_id = v.venue_id) as avg_ticket_price
+from Venue v;
+
+--question 2
+
+select event_id, event_name
+from Event_det
+where available_seats < (total_seats / 2);
+
+--question 3
+
+select e.event_id, e.event_name, 
+       (select sum(b.num_tickets) 
+        from Booking b 
+        where b.event_id = e.event_id) as total_tickets_sold
+from Event_det e;
+
+--question 4
+
+select c.customer_id, c.customer_name
+from Customer c
+where not exists (
+select 1 from Booking b where b.customer_id = c.customer_id);
+
+--question 5
+
+select event_id, event_name
+from Event_det
+where event_id not in (select distinct event_id from Booking);
+
+--question 6
+
+select e.event_type, sum(t.total_tickets) as total_tickets_sold from (
+    select event_id, sum(num_tickets) as total_tickets
+    from Booking
+    group by event_id) t
+join Event_det e on t.event_id = e.event_id
+group by e.event_type;
+
+--question 7
+
+select event_id, event_name, ticket_price
+from Event_det
+where ticket_price > (select avg(ticket_price) from Event_det);
+
+--question 8
+
+select c.customer_id, c.customer_name, 
+       (select sum(b.num_tickets * e.ticket_price)
+        from Booking b
+        join Event_det e on b.event_id = e.event_id
+        where b.customer_id = c.customer_id) as total_revenue
+from Customer c;
+
+--question 9
+
+select distinct c.customer_id, c.customer_name
+from Customer c
+where c.customer_id in (
+    select b.customer_id
+    from Booking b
+    where b.event_id in (select e.event_id from Event_det e where e.venue_id = 1));
+
+--question 10
+
+select e.event_type, 
+(select sum(b.num_tickets) 
+from Booking b 
+where b.event_id = e.event_id) as total_tickets_sold
+from Event_det e
+group by e.event_type, e.event_id;
+
+--question 11
+
+select distinct c.customer_id, c.customer_name, 
+       format(cast(b.booking_date as date), 'yyyy-MM') as booking_month
+from Customer c
+join Booking b on c.customer_id = b.customer_id
+where cast(b.booking_date as date) in (
+    select distinct cast(booking_date as date) from Booking);
+
+--question 12
+
+select v.venue_id, v.venue_name, 
+       (select avg(ticket_price) from Event_det e where e.venue_id = v.venue_id) as avg_ticket_price
+from Venue v;
