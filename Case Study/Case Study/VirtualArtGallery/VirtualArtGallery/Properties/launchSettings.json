@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VirtualArtGallery": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
